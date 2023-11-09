@@ -1,0 +1,8 @@
+{
+  "mainnet": {
+    "MorphoAaveV3": {
+      "address": "0x33333aea097c193e66081E930c33020272b33333",
+      "startBlock": 17161283
+    }
+  }
+}

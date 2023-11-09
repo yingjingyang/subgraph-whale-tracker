@@ -1,0 +1,34 @@
+type Whale @entity {
+  id: ID!
+  aaveV3Positions: [AaveV3Position]!  @derivedFrom(field: "whale")
+  aaveV2Positions: [AaveV2Position]!  @derivedFrom(field: "whale")
+  compoundPositions: [CompoundPosition]!  @derivedFrom(field: "whale")
+}
+
+
+type AaveV3Position @entity {
+  id: ID!
+  userId: String!
+  tokenName: String!
+  borrowAmount: BigInt!
+  supplyAmount: BigInt!
+  whale: Whale!
+}
+
+type AaveV2Position @entity {
+  id: ID!
+  userId: String!
+  tokenName: String!
+  borrowAmount: BigInt!
+  supplyAmount: BigInt!
+  whale: Whale!
+}
+
+type CompoundPosition @entity {
+  id: ID!
+  userId: String!
+  tokenName: String!
+  borrowAmount: BigInt!
+  supplyAmount: BigInt!
+  whale: Whale!
+}

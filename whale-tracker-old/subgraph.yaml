@@ -1,0 +1,106 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: MorphoAaveV3
+    network: mainnet
+    source:
+      address: "0x33333aea097c193e66081E930c33020272b33333"
+      abi: MorphoAaveV3
+      startBlock: 17161283
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Supplied
+        - CollateralSupplied
+        - Borrowed
+        - Repaid
+        - Withdrawn
+        - CollateralWithdrawn
+        - Liquidated
+      abis:
+        - name: MorphoAaveV3
+          file: ./abis/MorphoAaveV3.json
+      eventHandlers:
+        - event: Supplied(indexed address,indexed address,indexed address,uint256,uint256,uint256)
+          handler: handleAaveV3Supplied
+        - event: CollateralSupplied(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleAaveV3CollateralSupplied
+        - event: Borrowed(address,indexed address,indexed address,indexed address,uint256,uint256,uint256)
+          handler: handleAaveV3Borrowed
+        - event: Repaid(indexed address,indexed address,indexed address,uint256,uint256,uint256)
+          handler: handleAaveV3Repaid
+        - event: Withdrawn(address,indexed address,indexed address,indexed address,uint256,uint256,uint256)
+          handler: handleAaveV3Withdrawn
+        - event: CollateralWithdrawn(address,indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleAaveV3CollateralWithdrawn
+        - event: Liquidated(indexed address,indexed address,indexed address,uint256,address,uint256)
+          handler: handleAaveV3Liquidated
+      file: ./src/morpho-aave-v-3.ts
+  - kind: ethereum
+    name: MorphoCompound
+    network: mainnet
+    source:
+      address: "0x8888882f8f843896699869179fB6E4f7e3B58888"
+      abi: MorphoCompound
+      startBlock: 14860866
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Supplied
+        - Borrowed
+        - Withdrawn
+        - Repaid
+        - Liquidated
+      abis:
+        - name: MorphoCompound
+          file: ./abis/MorphoCompound.json
+      eventHandlers:
+        - event: Supplied(indexed address,indexed address,indexed address,uint256,uint256,uint256)
+          handler: handleCompoundSupplied
+        - event: Borrowed(indexed address,indexed address,uint256,uint256,uint256)
+          handler: handleCompoundBorrowed
+        - event: Withdrawn(indexed address,indexed address,indexed address,uint256,uint256,uint256)
+          handler: handleCompoundWithdrawn
+        - event: Repaid(indexed address,indexed address,indexed address,uint256,uint256,uint256)
+          handler: handleCompoundRepaid
+        - event: Liquidated(address,indexed address,indexed address,uint256,indexed address,uint256)
+          handler: handleCompoundLiquidated
+      file: ./src/morpho-compound.ts
+  - kind: ethereum
+    name: MorphoAaveV2
+    network: mainnet
+    source:
+      address: "0x777777c9898D384F785Ee44Acfe945efDFf5f3E0"
+      abi: MorphoAaveV2
+      startBlock: 15383036
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Supplied
+        - Borrowed
+        - Withdrawn
+        - Repaid
+        - Liquidated
+      abis:
+        - name: MorphoAaveV2
+          file: ./abis/MorphoAaveV2.json
+      eventHandlers:
+        - event: Supplied(indexed address,indexed address,indexed address,uint256,uint256,uint256)
+          handler: handleAveV2Supplied
+        - event: Borrowed(indexed address,indexed address,uint256,uint256,uint256)
+          handler: handleAveV2Borrowed
+        - event: Withdrawn(indexed address,indexed address,indexed address,uint256,uint256,uint256)
+          handler: handleAveV2Withdrawn
+        - event: Repaid(indexed address,indexed address,indexed address,uint256,uint256,uint256)
+          handler: handleAveV2Repaid
+        - event: Liquidated(address,indexed address,indexed address,uint256,indexed address,uint256)
+          handler: handleAveV2Liquidated
+      file: ./src/morpho-aave-v-2.ts
