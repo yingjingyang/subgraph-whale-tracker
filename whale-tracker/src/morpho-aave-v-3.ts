@@ -69,7 +69,10 @@ function handleWithdrawn(userId:string,tokenId:string,amount:BigInt): void{
   let changeAmount = amount
   let aaveV3Position = getPosition(userId,tokenId)
   let newPositionSupplyAmount = aaveV3Position.supplyAmount.minus(changeAmount)
-  if(newPositionSupplyAmount.le(zeroBigInt)){
+  let currentBorrowAmount = aaveV3Position.borrowAmount
+  let borrowAmountLessThanZero = currentBorrowAmount.le(zeroBigInt)
+  let supplyAmountLessThanZero = newPositionSupplyAmount.le(zeroBigInt)
+  if(borrowAmountLessThanZero && supplyAmountLessThanZero){
     store.remove('AaveV2Position',aaveV3Position.id)
   }else{
     aaveV3Position.supplyAmount = newPositionSupplyAmount
@@ -112,7 +115,10 @@ export function handleAaveV3Repaid(event: RepaidEvent): void {
   let tokenId = event.params.underlying.toHexString()
   let aaveV3Position = getPosition(userId,tokenId)
   let newPositionBorrowAmount = aaveV3Position.borrowAmount.minus(changeAmount)
-  if(newPositionBorrowAmount.le(zeroBigInt)){
+  let borrowAmountLessThanZero = newPositionBorrowAmount.le(zeroBigInt)
+  let currentSupplyAmount = aaveV3Position.supplyAmount
+  let supplyAmountLessThanZero = currentSupplyAmount.le(zeroBigInt)
+  if(borrowAmountLessThanZero && supplyAmountLessThanZero){
     store.remove('AaveV2Position',aaveV3Position.id)
   }else{
     aaveV3Position.borrowAmount = newPositionBorrowAmount
@@ -144,7 +150,10 @@ export function handleAaveV3Liquidated(event: LiquidatedEvent): void {
   let borrowTokenId = event.params.underlyingBorrowed.toHexString()
   let aaveV3BorrowPosition = getPosition(userId,borrowTokenId)
   let newAaveV3BorrowAmount = aaveV3BorrowPosition.borrowAmount.minus(repaidAmount)
-  if(newAaveV3BorrowAmount.le(zeroBigInt)){
+  let borrowAmountLessThanZero = newAaveV3BorrowAmount.le(zeroBigInt)
+  let currentSupplyAmount = aaveV3BorrowPosition.supplyAmount
+  let supplyAmountLessThanZero = currentSupplyAmount.le(zeroBigInt)
+  if(borrowAmountLessThanZero && supplyAmountLessThanZero){
     store.remove('AaveV2Position',aaveV3BorrowPosition.id)
   }else{
     aaveV3BorrowPosition.borrowAmount = newAaveV3BorrowAmount
@@ -155,6 +164,9 @@ export function handleAaveV3Liquidated(event: LiquidatedEvent): void {
   let supplyTokenId = event.params.underlyingCollateral.toHexString()
   let aaveV3SupplyPosition = getPosition(userId,supplyTokenId)
   let newAaveV3SupplyAmount = aaveV3SupplyPosition.supplyAmount.minus(liquidatedAmount)
+  currentSupplyAmount = aaveV3SupplyPosition.borrowAmount
+  borrowAmountLessThanZero = currentSupplyAmount.le(zeroBigInt)
+  supplyAmountLessThanZero = newAaveV3SupplyAmount.le(zeroBigInt)
   if(newAaveV3SupplyAmount.le(zeroBigInt)){
     store.remove('AaveV2Position',aaveV3SupplyPosition.id)
   }else{

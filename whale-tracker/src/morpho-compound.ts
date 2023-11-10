@@ -93,7 +93,10 @@ export function handleCompoundRepaid(event: RepaidEvent): void {
   let poolToken = event.params._poolToken.toHexString()
   let compoundPosition = getPosition(userId,poolToken)
   let newPositionBorrowAmount = compoundPosition.borrowAmount.minus(changeAmount)
-  if(newPositionBorrowAmount.le(zeroBigInt)){
+  let borrowAmountLessThanZero = newPositionBorrowAmount.le(zeroBigInt)
+  let currentSupplyAmount = compoundPosition.supplyAmount
+  let supplyAmountLessThanZero = currentSupplyAmount.le(zeroBigInt)
+  if(borrowAmountLessThanZero && supplyAmountLessThanZero){
     store.remove('CompoundPosition',compoundPosition.id)
   }else{
     compoundPosition.borrowAmount = newPositionBorrowAmount
@@ -109,7 +112,10 @@ export function handleCompoundWithdrawn(event: WithdrawnEvent): void {
   let poolToken = event.params._poolToken.toHexString()
   let compoundPosition = getPosition(userId,poolToken)
   let newPositionSupplyAmount = compoundPosition.supplyAmount.minus(changeAmount)
-  if(newPositionSupplyAmount.le(zeroBigInt)){
+  let currentBorrowAmount = compoundPosition.borrowAmount
+  let borrowAmountLessThanZero = currentBorrowAmount.le(zeroBigInt)
+  let supplyAmountLessThanZero = newPositionSupplyAmount.le(zeroBigInt)
+  if(borrowAmountLessThanZero && supplyAmountLessThanZero){
     store.remove('CompoundPosition',compoundPosition.id)
   }else{
     compoundPosition.supplyAmount = newPositionSupplyAmount
@@ -129,7 +135,10 @@ export function handleCompoundLiquidated(event: LiquidatedEvent): void {
   let poolTokenBorrowedAddress = event.params._poolTokenBorrowedAddress.toHexString()
   let compoundBorrowPosition = getPosition(userId,poolTokenBorrowedAddress)
   let newCompoundBorrowAmount = compoundBorrowPosition.borrowAmount.minus(repaidAmount)
-  if(newCompoundBorrowAmount.le(zeroBigInt)){
+  let borrowAmountLessThanZero = newCompoundBorrowAmount.le(zeroBigInt)
+  let currentSupplyAmount = compoundBorrowPosition.supplyAmount
+  let supplyAmountLessThanZero = currentSupplyAmount.le(zeroBigInt)
+  if(borrowAmountLessThanZero && supplyAmountLessThanZero){
     store.remove('CompoundPosition',compoundBorrowPosition.id)
   }else{
     compoundBorrowPosition.borrowAmount = newCompoundBorrowAmount
@@ -139,7 +148,10 @@ export function handleCompoundLiquidated(event: LiquidatedEvent): void {
   let poolTokenCollateralAddress = event.params._poolTokenCollateralAddress.toHexString()
   let compoundSupplyPosition = getPosition(userId,poolTokenCollateralAddress)
   let newCompoundSupplyAmount = compoundSupplyPosition.supplyAmount.minus(liquidatedAmount)
-  if(newCompoundBorrowAmount.le(zeroBigInt)){
+  let currentBorrowAmount = compoundSupplyPosition.borrowAmount
+  borrowAmountLessThanZero = currentBorrowAmount.le(zeroBigInt)
+  supplyAmountLessThanZero = newCompoundSupplyAmount.le(zeroBigInt)
+  if(borrowAmountLessThanZero && supplyAmountLessThanZero){
     store.remove('CompoundPosition',compoundSupplyPosition.id)
   }else{
     compoundSupplyPosition.supplyAmount = newCompoundSupplyAmount
